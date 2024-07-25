@@ -3,6 +3,7 @@ from woocommerce import API
 import random
 import time
 import string
+import csv
 
 woo_api = API(
     url=url,
@@ -34,11 +35,24 @@ while True:
                 skipped_items.append(s_name)
                 continue
     
-            if product['regular_price'] == '13.50':
-                missing_price_items.append({'id': product['id'], 'product_name': product['name']})
+            if product['regular_price'] <= '1.00':
+                missing_price_items.append({'id': product['id'], 'product_name': product['name'], 'product_price': product['price']})
         # breakpoint()
 
         current_page += 1
 
 
-print(missing_price_items)
+fieldnames = ['id', 'name', 'price']
+
+with open('missing_price.csv', 'w', newline='') as f:
+      writer = csv.DictWriter(f, fieldnames=fieldnames)
+
+      writer.writeheader()
+      for item in missing_price_items:
+         data  = {
+              'id': item['id'],
+              'name': item['product_name'],
+              'price': item['product_price'] 
+         }
+         writer.writerow(data)
+
