@@ -30,19 +30,19 @@ while True:
                 break 
         
         for product in all_products:
-            if product['type'] != 'simple':
-                s_name = product['name'] +',' + product['type']
-                skipped_items.append(s_name)
-                continue
+        #     if product['type'] != 'simple':
+        #         s_name = product['name'] +',' + product['type']
+        #         skipped_items.append(s_name)
+        #         continue
     
-            if product['regular_price'] <= '1.00':
-                missing_price_items.append({'id': product['id'], 'product_name': product['name'], 'product_price': product['price']})
-        # breakpoint()
+            if product['regular_price'] == '' or product['regular_price'] == 'none':
+                missing_price_items.append({'id': product['id'], 'product_name': product['name'], 'product_price': product['regular_price']})
+        # # breakpoint()
 
         current_page += 1
 
 
-fieldnames = ['id', 'name', 'price']
+fieldnames = ['id',   'name',   'regular_price']
 
 with open('missing_price.csv', 'w', newline='') as f:
       writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -50,9 +50,12 @@ with open('missing_price.csv', 'w', newline='') as f:
       writer.writeheader()
       for item in missing_price_items:
          data  = {
-              'id': item['id'],
-              'name': item['product_name'],
-              'price': item['product_price'] 
+              'id': item['id']  ,
+              'name': item['product_name']  ,
+              'regular_price': item['product_price']
          }
          writer.writerow(data)
 
+
+print(missing_price_items)
+      
